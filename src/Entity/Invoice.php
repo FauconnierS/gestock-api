@@ -18,9 +18,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  *          "normalization_context"={"groups"={"invoices_subresource"}}         
  * }},
  *  attributes={
- *      "pagination_enabled"=true,
+ *      "pagination_enabled"=false,
  *      "pagination_items_per_page"=10,
- *      "order": {"amount" : "desc"} 
+ *      "order": {"sentAt" : "desc"} 
  * },
  *  normalizationContext ={"groups"={"invoices_read"}},
  *  denormalizationContext={"disable _type_enforcement"=true}
@@ -36,7 +36,7 @@ class Invoice
      * @Groups({"invoices_read","customers_read","invoices_subresource"})
      */
     private $id;
-    
+
     /**
      * @ORM\Column(type="float")
      * @Groups({"invoices_read","customers_read","invoices_subresource"})
@@ -148,8 +148,8 @@ class Invoice
      *
      * @return User
      */
-    public function getUser() : User {
-        return $this -> customer -> getUser();
+    public function getUser(): User
+    {
+        return $this->customer->getUser();
     }
-  
 }
