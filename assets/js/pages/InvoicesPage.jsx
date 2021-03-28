@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import TableLoader from "../components/loaders/TableLoader";
 import Pagination from "../components/Pagination";
 import invoicesAPI from "../services/invoicesAPI";
 import utils from "../services/utils";
@@ -20,6 +22,7 @@ const InvoicesPage = (props) => {
   const [invoices, setInvoices] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const itemsPerPage = 20;
 
@@ -28,8 +31,9 @@ const InvoicesPage = (props) => {
     try {
       const data = await invoicesAPI.findAll();
       setInvoices(data);
+      setLoading(false);
     } catch (error) {
-      console.log(error.response);
+      toast.error("Erreur chargement de facture");
     }
   };
 
@@ -69,9 +73,9 @@ const InvoicesPage = (props) => {
 
     try {
       await invoicesAPI.delete(id);
-      console.log("invoice n° " + id + " deleted");
+      toast.success("La facture " + id + " c'est envolée");
     } catch (error) {
-      console.log(error.response);
+      toast.error("Oups ! Une erreur est survenue");
       setInvoices(orignalInvoices);
     }
   };
@@ -109,42 +113,47 @@ const InvoicesPage = (props) => {
             <th></th>
           </tr>
         </thead>
-        <tbody>
-          {paginatedInvoices.map((invoice) => (
-            <tr key={invoice.id}>
-              <td>{invoice.chrono}</td>
-              <td>
-                {invoice.customer.firstName} {invoice.customer.lastName}
-              </td>
-              <td>{utils.formatDate(invoice.sentAt)}</td>
-              <td>{invoice.amount.toLocaleString()}</td>
-              <td>
-                <span
-                  className={
-                    "badge p-2 badge-" + STATUS_CLASSES[invoice.status]
-                  }
-                >
-                  {STATUS_LABEL[invoice.status]}
-                </span>
-              </td>
-              <td>
-                <Link
-                  to={"/invoices/" + invoice.id}
-                  className="btn btn-sm mx-1 btn-warning"
-                >
-                  Editer
-                </Link>
-                <button
-                  onClick={() => handleDelete(invoice.id)}
-                  className="btn btn-sm mx-1 btn-danger"
-                >
-                  Supprimer
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
+        {!loading && (
+          <tbody>
+            {paginatedInvoices.map((invoice) => (
+              <tr key={invoice.id}>
+                <td>{invoice.chrono}</td>
+                <td>
+                  <Link to={"/customers/" + invoice.customer.id}>
+                    {invoice.customer.firstName} {invoice.customer.lastName}
+                  </Link>
+                </td>
+                <td>{utils.formatDate(invoice.sentAt)}</td>
+                <td>{invoice.amount.toLocaleString()}</td>
+                <td>
+                  <span
+                    className={
+                      "badge p-2 badge-" + STATUS_CLASSES[invoice.status]
+                    }
+                  >
+                    {STATUS_LABEL[invoice.status]}
+                  </span>
+                </td>
+                <td>
+                  <Link
+                    to={"/invoices/" + invoice.id}
+                    className="btn btn-sm mx-1 btn-warning"
+                  >
+                    Editer
+                  </Link>
+                  <button
+                    onClick={() => handleDelete(invoice.id)}
+                    className="btn btn-sm mx-1 btn-danger"
+                  >
+                    Supprimer
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        )}
       </table>
+      {loading && <TableLoader />}
       <Pagination
         currentPage={currentPage}
         dataLength={filteredInvoices.length}

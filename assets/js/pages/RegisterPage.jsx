@@ -1,6 +1,7 @@
 import Axios from "axios";
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import Field from "../components/forms/Field";
 import usersAPI from "../services/usersAPI";
 
@@ -34,12 +35,14 @@ const RegisterPage = ({ history }) => {
       apiErrors.passwordConfirm =
         "Votre Mot de passe doit correspondre à la Confirmation";
       setErrors(apiErrors);
+      toast.error("Des erreurs dans votre formulaire ");
       return;
     }
 
     try {
       await usersAPI.register(user);
       setErrors({});
+      toast.success("Bienvenue sur SymReact, Connectez vous");
       history.replace("/login");
     } catch ({ response }) {
       const { violations } = response.data;
@@ -50,6 +53,7 @@ const RegisterPage = ({ history }) => {
         });
         setErrors(apiErrors);
       }
+      toast.error("Des erreurs dans votre formulaire");
     }
   };
 

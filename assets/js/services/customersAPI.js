@@ -10,7 +10,7 @@ function findById(id) {
 }
 
 function remove(id) {
-  return axios.delete("http://localhost:8000/api/custommers/" + id);
+  return axios.delete("http://localhost:8000/api/customers/" + id);
 }
 
 function create(customer) {
