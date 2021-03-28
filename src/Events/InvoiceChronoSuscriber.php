@@ -39,6 +39,10 @@ class InvoiceChronoSuscriber implements EventSubscriberInterface
             $chrono = $this->repository->findLastChrono($user);
 
             $invoice->setChrono($chrono + 1);
+
+            if (empty($invoice->getSentAt())) {
+                $invoice->setSentAt(new \DateTime());
+            }
         }
     }
 }

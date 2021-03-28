@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import Pagination from "../components/Pagination";
 import invoicesAPI from "../services/invoicesAPI";
 import utils from "../services/utils";
@@ -81,7 +82,12 @@ const InvoicesPage = (props) => {
 
   return (
     <>
-      <h1>Liste des Factures</h1>
+      <div className="d-flex justify-content-between align-items-center">
+        <h1>Liste des factures</h1>
+        <Link className=" btn btn-secondary" to="/invoices/new">
+          Créer une facture
+        </Link>
+      </div>
 
       <div className="form-group">
         <input
@@ -122,7 +128,12 @@ const InvoicesPage = (props) => {
                 </span>
               </td>
               <td>
-                <button className="btn btn-sm mx-1 btn-warning">Editer</button>
+                <Link
+                  to={"/invoices/" + invoice.id}
+                  className="btn btn-sm mx-1 btn-warning"
+                >
+                  Editer
+                </Link>
                 <button
                   onClick={() => handleDelete(invoice.id)}
                   className="btn btn-sm mx-1 btn-danger"

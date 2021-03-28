@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import AuthContext from "../contexts/AuthContext";
 import authAPI from "../services/authAPI";
+import Field from "../components/forms/Field";
 
 const LoginPage = ({ history }) => {
   const { setIsAuthenticated } = useContext(AuthContext);
@@ -30,31 +31,26 @@ const LoginPage = ({ history }) => {
   return (
     <>
       <h1>Connexion à L'application</h1>
-      {error && <div className="alert alert-danger">{error}</div>}
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="username">Email</label>
-          <input
-            type="text"
-            value={credentials.username}
-            onChange={handleChange}
-            placeholer="Adresse Email ..."
-            name="username"
-            className={"form-control " + (error && "is-invalid")}
-            id="username"
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="password">Mot de passe</label>
-          <input
-            type="password"
-            value={credentials.password}
-            onChange={handleChange}
-            name="password"
-            id="password"
-            className={"form-control" + (error && " is-invalid")}
-          />
-        </div>
+        <Field
+          label="Adresse Email"
+          name="username"
+          value={credentials.username}
+          onChange={handleChange}
+          placeholer="Adresse email de connexion"
+          type="email"
+          error={error}
+        />
+
+        <Field
+          name="password"
+          label="Mot de passe"
+          value={credentials.password}
+          onChange={handleChange}
+          type="password"
+          error={error}
+        />
+
         <div className="form-group">
           <button type="submit" className="btn btn-success">
             Se connecter
