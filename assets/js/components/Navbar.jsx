@@ -16,7 +16,7 @@ const Navbar = ({ history }) => {
     <>
       <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
         <NavLink className="navbar-brand" to="/">
-          SymReact
+          Gestock
         </NavLink>
         <button
           className="navbar-toggler"
