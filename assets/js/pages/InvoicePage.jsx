@@ -55,6 +55,7 @@ const InvoicePage = ({ history, match }) => {
 
   useEffect(() => {
     if (id !== "new") {
+      setLoading(true);
       setEditing(true);
       fetchInvoice(id);
     }

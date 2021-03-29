@@ -1,9 +1,8 @@
 import Axios from "axios";
+import { USERS_API } from "../config";
 
 function create(user) {
-  return Axios.post("http://localhost:8000/api/users", user).then(
-    (response) => response.data
-  );
+  return Axios.post(USERS_API, user).then((response) => response.data);
 }
 
 export default {

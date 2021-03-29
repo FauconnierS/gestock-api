@@ -1,35 +1,51 @@
 import axios from "axios";
+import Cache from "./cache";
+import { INVOICES_API } from "../config";
 
-const urlApi = "http://localhost:8000/api/invoices";
+async function findAll() {
+  const cachedInvoices = await Cache.get("invoices");
 
-function findAll() {
-  return axios.get(urlApi).then((response) => response.data["hydra:member"]);
+  if (cachedInvoices) return cachedInvoices;
+  return axios.get(INVOICES_API).then((response) => {
+    const invoices = response.data["hydra:member"];
+    Cache.set("invoices", invoices);
+    return invoices;
+  });
 }
 
 function findById(id) {
-  return axios.get(urlApi + "/" + id).then((response) => response.data);
+  return axios.get(INVOICES_API + "/" + id).then((response) => response.data);
 }
 
 function remove(id) {
-  return axios.delete("http://localhost:8000/api/invoices/" + id);
+  return axios.delete(INVOICES_API + "/" + id).then((response) => {
+    Cache.invalidate("invoices");
+    return response;
+  });
 }
 
 function edit(invoice, id) {
   return axios
-    .put(urlApi + "/" + id, {
+    .put(INVOICES_API + "/" + id, {
       ...invoice,
       customer: `/api/customers/${invoice.customer}`,
     })
-    .then((response) => response.data);
+    .then((response) => {
+      Cache.invalidate("invoices");
+      return response;
+    });
 }
 
 function create(invoice) {
   return axios
-    .post(urlApi, {
+    .post(INVOICES_API, {
       ...invoice,
       customer: `/api/customers/${invoice.customer}`,
     })
-    .then(console.log);
+    .then((response) => {
+      Cache.invalidate("invoices");
+      return response;
+    });
 }
 
 export default {
